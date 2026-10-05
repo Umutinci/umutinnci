@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111525">
+  <title>Sihirli Kartlar | Balıkesir Üniversitesi Matematik Topluluğu</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <img src="assets/topluluk-logo.jpg" width="64" height="64" alt="Matematik Topluluğu logosu">
+        <div><strong>MATEMATİK TOPLULUĞU</strong><span>Balıkesir Üniversitesi · Sihirli Kartlar</span></div>
+      </div>
+      <button type="button" class="btn ghost" id="soundBtn" aria-pressed="false">Ses: kapalı</button>
+    </header>
+    <main>
+      <p class="notice" id="loadNotice" role="status">Oyun yükleniyor. Bu yazı kalırsa dosyayı önizleme yerine Safari veya Chrome ile aç. Ayrı dosyalı sürümde tüm klasörü birlikte kullan.</p>
+      <noscript><p class="notice">Oyun için JavaScript açık olmalıdır. Dosyayı Safari veya Chrome ile aç.</p></noscript>
+      <section id="start" class="screen" aria-labelledby="startTitle">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Biraz oyun, biraz matematik</p>
+            <h1 id="startTitle">Bir sayı tut.<br>Matematik bulsun.</h1>
+            <p id="intro">Sayını yalnızca aklında tut. Kartları kontrol et ve Evet veya Hayır de.</p>
+            <div class="settings">
+              <div><label for="rangeSelect">Sayı aralığı</label><select id="rangeSelect"><option value="20">1–20</option><option value="30">1–30</option><option value="63">1–63</option><option value="100" selected>1–100</option><option value="500">1–500</option><option value="1000">1–1.000</option></select></div>
+              <div><label for="baseSelect">Oyun tabanı</label><select id="baseSelect"><option value="2">İkili · 2 tabanı</option><option value="3">Üçlü · 3 tabanı</option><option value="4">Dörtlü · 4 tabanı</option><option value="5">Beşli · 5 tabanı</option></select></div>
+            </div>
+            <p class="small" id="rangeNote" aria-live="polite"></p>
+            <button type="button" class="btn primary" id="startBtn" disabled>Oyunu Başlat</button>
+          </div>
+          <div class="orb" aria-hidden="true"><span>✦</span><strong id="orbRange">1–100</strong><small id="orbCards">Yalnızca Evet / Hayır</small></div>
+        </div>
+        <aside class="qr-callout">
+          <a href="https://chat.whatsapp.com/I21R5zPnhjhHI4A2Wlo80f" target="_blank" rel="noopener noreferrer" aria-label="Matematik Topluluğu WhatsApp grubuna katıl"><img src="assets/whatsapp-qr.png" width="112" height="112" alt="Matematik Topluluğu WhatsApp grubu QR kodu"></a>
+          <div><h2>Matematik burada bitmiyor.</h2><p>2026–27 Matematik Topluluğu WhatsApp grubuna katıl.</p><a href="https://chat.whatsapp.com/I21R5zPnhjhHI4A2Wlo80f" target="_blank" rel="noopener noreferrer">Gruba katıl ↗</a></div>
+        </aside>
+      </section>
+      <section id="game" class="screen" hidden aria-labelledby="cardTitle">
+        <div id="sequentialGame">
+        <div class="game-head"><div><p class="eyebrow" id="gameRange"></p><h2 id="cardTitle" tabindex="-1">Kart 1</h2><p>Aklındaki sayı bu kartta var mı?</p></div><div class="progress-wrap"><p class="small" id="progressLabel"></p><div class="progress" id="progressTrack" role="progressbar" aria-label="Tamamlanan kartlar" aria-valuemin="0"><div id="progressBar"></div></div></div></div>
+        <p class="small" id="cardMeta"></p>
+        <p class="range-help" id="rangeHelp" hidden>Aralıkların iki ucu da dahildir. Örneğin 64–127, 64'ten 127'ye kadar bütün sayıları içerir.</p>
+        <div class="numbers" id="numbers" role="region" aria-label="Bu karttaki sayılar" tabindex="0"></div>
+        <div class="answer-controls"><p class="question">Sayını görüyor musun?</p><div class="answer-row"><button type="button" class="btn yes" id="yesBtn">Evet <span class="kbd">E</span></button><button type="button" class="btn no" id="noBtn">Hayır <span class="kbd">H</span></button></div></div>
+        </div>
+        <div id="rowGame" hidden>
+          <p class="eyebrow" id="rowRange"></p>
+          <h2 id="rowTitle" tabindex="-1">Kartları sırayla kontrol et</h2>
+          <p>Her satırda sayın varsa Evet, yoksa Hayır seç. Cevabını değiştirebilirsin.</p>
+          <details id="baseHelp"><summary>Bu tabanda kartlar nasıl çalışıyor?</summary><div class="detail-body"><p id="baseHelpText"></p><p class="formula" id="baseHelpExample"></p><p>Her satır yine yalnızca Evet veya Hayır sorar. Aynı basamağın kartlarından en fazla birine Evet denebilir; hepsine Hayır denirse o basamak 0 olur.</p></div></details>
+          <div id="cardRows" class="card-rows"></div>
+          <section class="live-math" aria-labelledby="liveMathTitle">
+            <h3 id="liveMathTitle">Cevaplarınla oluşan sayı</h3>
+            <div id="numberReveal" class="number-reveal">
+              <div class="math-block">
+              <div id="digitStrip" class="digit-strip" aria-label="Seçilen tabandaki basamaklar; büyükten küçüğe"></div>
+                <div id="liveTerms" class="live-terms" aria-label="Basamakların katkıları"></div>
+            <p id="liveTotal" class="live-total" role="status" aria-live="polite"></p>
+              </div>
+              <div id="largeResult" class="large-result" hidden aria-label="Tuttuğun sayı">
+                <div class="result-label-group"><span class="result-caption">Tahmin ettiğin sayı</span><strong id="largeResultValue"></strong></div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <div class="back-row"><button type="button" class="btn ghost" id="undoBtn" disabled>Önceki kart</button><button type="button" class="btn ghost" id="homeBtn">Başa dön</button></div>
+      </section>
+      <section id="result" class="screen reveal" hidden aria-labelledby="resultText">
+        <p class="eyebrow" id="resultLead">Aklından tuttuğun sayı…</p><div class="answer" id="answer" aria-live="polite"></div><h2 id="resultText" tabindex="-1">Bildim!</h2><p id="resultSub"></p>
+        <p class="notice" id="errorBox" role="alert" hidden></p>
+        <div class="cta-row"><button type="button" class="btn primary" id="restartBtn">Tekrar Oyna</button><button type="button" class="btn ghost" id="resultHomeBtn">Aralık / taban değiştir</button><button type="button" class="btn ghost" id="reviewBtn">Son kartı düzelt</button></div>
+        <details id="mathDetails"><summary>Gizli matematiği gör</summary><div class="detail-body"><p id="mathExplanation"></p><p class="formula" id="resultSum"></p><p class="small" id="resultDigits"></p><div class="weights" id="yesWeights"></div><p class="small">Farklı tabanlarda da yalnızca Evet / Hayır kullanıyoruz. Daha yüksek taban her zaman daha az kart demek değildir.</p><div class="table-wrap"><table><caption>Seçtiğin aralıkta kart sayıları</caption><thead><tr><th scope="col">Taban</th><th scope="col">Basamak sayısı</th><th scope="col">Kart sayısı</th></tr></thead><tbody id="comparisonBody"></tbody></table></div></div></details>
+      </section>
+    </main>
+    <footer><img src="assets/universite-logo.jpg" width="32" height="32" alt="Balıkesir Üniversitesi logosu"><span>Balıkesir Üniversitesi Matematik Topluluğu · Sihirli Kartlar</span></footer>
+  </div>
+</body>
+</html>
